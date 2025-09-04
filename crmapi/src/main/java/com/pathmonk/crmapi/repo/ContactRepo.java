@@ -7,6 +7,5 @@ import com.pathmonk.crmapi.model.Contact;
 
 @Repository
 public interface ContactRepo extends JpaRepository<Contact, Long> {
-    // Query para obtener contactos con todos los tags dados
     Boolean existsByEmail(String email);
 }

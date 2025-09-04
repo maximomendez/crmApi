@@ -148,11 +148,11 @@ public class ContactController {
         ContactTag ct = contactService.attachTag(id, dto.getName(), dto.getType());
 
         ContactTagResponseDto response = new ContactTagResponseDto(
-                ct.getId(), // id de la relación ContactTag
-                ct.getContact().getId(), // contactId
-                ct.getTag().getId(), // tagId
-                ct.getTag().getName(), // tagName
-                ct.getTag().getType().name() // tagType
+                ct.getId(),
+                ct.getContact().getId(),
+                ct.getTag().getId(),
+                ct.getTag().getName(),
+                ct.getTag().getType().name()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

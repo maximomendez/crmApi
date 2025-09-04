@@ -40,7 +40,7 @@ public class Tag {
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ContactTag> contactTags = new HashSet<>();
 
-    public Tag() {} // ✅ Constructor vacío
+    public Tag() {}
 
     public Tag(Long id, String name, TagType type, Instant createdAt) {
         this.id = id;

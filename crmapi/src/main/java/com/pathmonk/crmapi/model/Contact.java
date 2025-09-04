@@ -32,11 +32,11 @@ public class Contact {
     private String email;
 
     @Version
-    private Long version; // optimistic locking
+    private Long version;
 
-    public Contact() {} // ✅ Constructor vacío requerido por JPA
+    public Contact() {}
 
-    public Contact(Long id, String name, String email, Long version) { // ✅ Constructor para tu seed
+    public Contact(Long id, String name, String email, Long version) {
         this.id = id;
         this.name = name;
         this.email = email;

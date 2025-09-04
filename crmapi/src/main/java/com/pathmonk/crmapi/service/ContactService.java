@@ -124,13 +124,11 @@ public class ContactService {
             return contactRepo.findAll(pageable);
         }
 
-        // 1️⃣ Obtener todos los Tag IDs de los nombres solicitados
         List<Tag> tags = tagNames.stream()
-                .map(name -> tagService.createOrGetTag(name, TagType.USER)) // Si no existen, los crea
+                .map(name -> tagService.createOrGetTag(name, TagType.USER))
                 .collect(Collectors.toList());
         List<Long> tagIds = tags.stream().map(Tag::getId).collect(Collectors.toList());
 
-        // 2️⃣ Obtener todos los contactos que tengan cada tagId y hacer intersección
         Set<Long> contactIds = null;
         for (Long tagId : tagIds) {
             List<ContactTag> cts = contactTagRepo.findByTagId(tagId);
@@ -146,10 +144,8 @@ public class ContactService {
             return Page.empty(pageable);
         }
 
-        // 3️⃣ Obtener contactos completos
         List<Contact> contacts = contactRepo.findAllById(contactIds);
 
-        // 4️⃣ Simular paginación manual (simple)
         int start = Math.min((int) pageable.getOffset(), contacts.size());
         int end = Math.min(start + pageable.getPageSize(), contacts.size());
         List<Contact> content = contacts.subList(start, end);

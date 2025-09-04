@@ -16,9 +16,6 @@ public interface ContactTagRepo extends JpaRepository<ContactTag, Long> {
     // Buscar relación específica contact-tag
     Optional<ContactTag> findByContactIdAndTagId(Long contactId, Long tagId);
 
-    // Borrar relación específica contact-tag
-    void deleteByContactIdAndTagId(Long contactId, Long tagId);
-
     // Búsqueda de ContactTag por tagId (opcional para búsquedas AND)
     List<ContactTag> findByTagId(Long tagId);
 }

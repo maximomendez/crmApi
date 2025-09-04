@@ -28,7 +28,7 @@ public class ContactTag {
 
     private Instant createdAt = Instant.now();
 
-    public ContactTag() {} // ✅ Constructor vacío
+    public ContactTag() {}
 
     public ContactTag(Long id, Contact contactId, Tag tagId, Instant createdAt) {
         this.id = id;
