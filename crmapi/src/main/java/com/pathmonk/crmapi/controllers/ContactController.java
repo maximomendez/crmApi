@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/contacts")
-@Tag(name = "Contactos", description = "Operaciones sobre contactos")
+@Tag(name = "Contacts", description = "Contact management endpoints")
 public class ContactController {
 
     private final ContactService contactService;
@@ -35,13 +35,13 @@ public class ContactController {
     }
 
     @Operation(
-        summary = "Crear un nuevo contacto",
-        description = "Crea un contacto si el email no existe previamente."
+        summary = "Create new contact",
+        description = "Creates a new contact if the email does not already exist."
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Contacto creado exitosamente"),
-        @ApiResponse(responseCode = "409", description = "Ya existe un contacto con ese email"),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos")
+        @ApiResponse(responseCode = "201", description = "Contact created successfully"),
+        @ApiResponse(responseCode = "409", description = "Contact already exists"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PostMapping
     public ResponseEntity<ContactResponseDto> createContact(@RequestBody ContactRequestDto requestDto) {
@@ -57,10 +57,10 @@ public class ContactController {
     }
 
     @Operation(
-        summary = "Obtener todos los contactos",
-        description = "Devuelve una lista de todos los contactos."
+        summary = "Get all contacts",
+        description = "Returns a list of all contacts."
     )
-    @ApiResponse(responseCode = "200", description = "Lista de contactos")
+    @ApiResponse(responseCode = "200", description = "List of contacts retrieved successfully")
     @GetMapping("/")
     public ResponseEntity<List<ContactResponseDto>> getAllContacts() {
         List<Contact> contacts = contactService.getContacts();
@@ -71,42 +71,40 @@ public class ContactController {
     }
 
     @Operation(
-        summary = "Obtener un contacto por ID",
-        description = "Devuelve los datos de un contacto específico."
+        summary = "Get contact by ID",
+        description = "Get a contact by its ID."
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Contacto encontrado"),
-        @ApiResponse(responseCode = "404", description = "Contacto no encontrado")
+        @ApiResponse(responseCode = "200", description = "Contact retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Contact not found")
     })
     @GetMapping("/{id}")
     public ResponseEntity<ContactResponseDto> getContact(
-            @Parameter(description = "ID del contacto", required = true)
+            @Parameter(description = "ContactId", required = true)
             @PathVariable Long id) {
         Contact contact = contactService.getContact(id);
         ContactResponseDto contactResponse = contactService.toDto(contact);
-        System.out.println(contactResponse);
         return ResponseEntity.ok().eTag("\"" + contactResponse.getVersion() + "\"").body(contactResponse);
     }
 
     @Operation(
-        summary = "Actualizar un contacto",
-        description = "Actualiza los datos de un contacto existente usando control de versiones (ETag)."
+        summary = "Update contact",
+        description = "Updates an existing contact. Requires the If-Match header for optimistic locking."
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Contacto actualizado"),
-        @ApiResponse(responseCode = "404", description = "Contacto no encontrado"),
-        @ApiResponse(responseCode = "412", description = "Versión desactualizada (If-Match)")
+        @ApiResponse(responseCode = "200", description = "Contact updated successfully"),
+        @ApiResponse(responseCode = "404", description = "Contact not found"),
+        @ApiResponse(responseCode = "412", description = "Precondition Failed - Version mismatch"),
     })
     @PutMapping("/{id}")
     public ResponseEntity<ContactResponseDto> updateContact(
-            @Parameter(description = "ID del contacto", required = true)
+            @Parameter(description = "ContactId", required = true)
             @PathVariable Long id,
             @RequestBody ContactRequestDto contact,
-            @Parameter(description = "ETag de la versión actual", required = true)
+            @Parameter(description = "ETag current version", required = true)
             @RequestHeader("If-Match") String ifMatch) {
 
         Long version = Long.parseLong(ifMatch.replace("\"", ""));
-        System.out.println("VERSION ACTUAL" + version);
 
         Contact updated = contactService.updateContact(id, contact, version);
 
@@ -116,32 +114,32 @@ public class ContactController {
     }
 
     @Operation(
-        summary = "Eliminar un contacto",
-        description = "Elimina un contacto por su ID."
+        summary = "Delete contact",
+        description = "Deletes a contact by its ID."
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Contacto eliminado"),
-        @ApiResponse(responseCode = "404", description = "Contacto no encontrado")
+        @ApiResponse(responseCode = "204", description = "Delete contact successfully"),
+        @ApiResponse(responseCode = "404", description = "Contact not found")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContact(
-            @Parameter(description = "ID del contacto", required = true)
+            @Parameter(description = "ContactId", required = true)
             @PathVariable Long id) {
         contactService.deleteContact(id);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(
-        summary = "Asociar un tag a un contacto",
-        description = "Asocia un tag existente o nuevo a un contacto."
+        summary = "Tag a contact",
+        description = "Put a tag on a contact. If the tag does not exist, it will be created."
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Tag asociado correctamente"),
-        @ApiResponse(responseCode = "404", description = "Contacto no encontrado")
+        @ApiResponse(responseCode = "201", description = "Tag attached successfully"),
+        @ApiResponse(responseCode = "404", description = "Contact not found"),
     })
     @PostMapping("/{id}/tags")
     public ResponseEntity<ContactTagResponseDto> attachTag(
-            @Parameter(description = "ID del contacto", required = true)
+            @Parameter(description = "ContactId", required = true)
             @PathVariable Long id,
             @RequestBody TagRequestDto dto) {
 
@@ -159,18 +157,18 @@ public class ContactController {
     }
 
     @Operation(
-        summary = "Desasociar un tag de un contacto",
-        description = "Elimina la relación entre un contacto y un tag."
+        summary = "Detach tag from contact",
+        description = "Deletes the association of a tag from a contact."
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Tag desasociado correctamente"),
-        @ApiResponse(responseCode = "404", description = "Contacto o tag no encontrado")
+        @ApiResponse(responseCode = "204", description = "Tag detached successfully"),
+        @ApiResponse(responseCode = "404", description = "Contact or Tag not found"),
     })
     @DeleteMapping("/{id}/tags/{tagId}")
     public ResponseEntity<Void> detachTag(
-            @Parameter(description = "ID del contacto", required = true)
+            @Parameter(description = "ContactId", required = true)
             @PathVariable Long id,
-            @Parameter(description = "ID del tag", required = true)
+            @Parameter(description = "TagId", required = true)
             @PathVariable Long tagId) {
         contactService.detachTag(id, tagId);
         return ResponseEntity.noContent().build();

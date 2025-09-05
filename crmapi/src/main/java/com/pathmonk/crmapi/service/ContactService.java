@@ -70,8 +70,6 @@ public class ContactService {
     public Contact updateContact(Long id, ContactRequestDto updated, Long ifMatchVersion) {
         Contact existing = getContact(id);
 
-        System.out.println("EXISTING CONTACT: " + existing);
-
         // Optimistic Locking
         if (!Objects.equals(existing.getVersion(), ifMatchVersion)) {
             throw new OptimisticLockException("Version mismatch");
@@ -92,12 +90,9 @@ public class ContactService {
         Contact contact = getContact(contactId);
         Tag tag = tagService.createOrGetTag(tagName, type);
 
-        System.out.println("TAG FOR USER " + contact);
-        System.out.println("TAG " + tag);
-
         // Verificar si ya existe la relación
         Optional<ContactTag> existingRelation = contactTagRepo.findByContactIdAndTagId(contact.getId(), tag.getId());
-        System.out.println("EXISTING RELATION " + existingRelation);
+
         if (existingRelation.isPresent()) {
             return existingRelation.get(); // reutilizar
         }

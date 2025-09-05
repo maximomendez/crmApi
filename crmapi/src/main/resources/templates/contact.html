@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Contact Form</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/js/quick-add-company.js}"></script>
+  </head>
+  <body>
+    <!-- Main Form -->
+    <div id="contactMessage" class="alert hidden" role="alert"></div>
+    <form class="pm-form" id="contactForm">
+      <h2 class="pm-form__title">New Contact</h2>
+      <p class="pm-form__subtitle">
+        Fill in the details to create a new contact.
+      </p>
+
+      <div class="form-group">
+        <label for="contactName" class="form-label">Name</label>
+        <input
+          type="text"
+          id="contactName"
+          name="name"
+          class="form-control"
+          th:value="${contact?.name}"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="contactEmail" class="form-label">Email</label>
+        <input
+          type="email"
+          id="contactEmail"
+          name="email"
+          class="form-control"
+          th:value="${contact?.email}"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="companySelect" class="form-label">Company</label>
+        <select id="companySelect" name="companyId" class="form-select">
+          <option value="">— Select company —</option>
+          <option
+            th:each="company : ${companies}"
+            th:value="${company.id}"
+            th:text="${company.name}"
+          ></option>
+        </select>
+      </div>
+
+      <!-- Quick Add Company Trigger -->
+      <div class="pm-row">
+        <button
+          type="button"
+          id="quickAddCompanyBtn"
+          class="btn btn--secondary"
+        >
+          + Quick Add Company
+        </button>
+      </div>
+
+      <!-- Save Contact -->
+      <div class="pm-row">
+        <button type="submit" class="btn btn--primary">Save Contact</button>
+      </div>
+    </form>
+    <!-- Quick Add Company Inline Panel -->
+    <section id="quickAddCompanyPanel" class="hidden" aria-hidden="true">
+      <div class="qac-header">
+        <h3>Quick Add Company</h3>
+        <button type="button" id="cancelQuickAdd" class="qac-close">✕</button>
+      </div>
+
+      <form id="quickAddCompanyForm" class="qac-grid">
+        <!-- Company Name -->
+        <div class="form-group">
+          <label for="companyName" class="form-label">Name</label>
+          <input
+            id="companyName"
+            name="name"
+            class="form-control form-control--compact"
+            required
+            minlength="2"
+            maxlength="80"
+          />
+          <small id="nameHelp" class="form-hint"
+            >Enter a valid company name</small
+          >
+        </div>
+
+        <!-- Website -->
+        <div class="form-group">
+          <label for="companyWebsite" class="form-label">Website</label>
+          <input
+            id="companyWebsite"
+            name="website"
+            class="form-control form-control--compact"
+            placeholder="https://example.com"
+          />
+        </div>
+
+        <!-- Industry -->
+        <div class="form-group">
+          <label for="companyIndustry" class="form-label"
+            >Industry (optional)</label
+          >
+          <input
+            id="companyIndustry"
+            name="industry"
+            class="form-control form-control--compact"
+          />
+        </div>
+
+        <!-- Actions -->
+        <div class="pm-row pm-grid--full">
+          <button id="saveCompanyBtn" type="submit" class="btn btn--primary">
+            <span class="hidden" aria-hidden="true"></span>
+            Save Company
+          </button>
+          <button type="button" id="cancelQuickAddForm" class="btn btn--secondary">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </section>
+  </body>
+</html>
