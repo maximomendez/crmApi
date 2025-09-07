@@ -15,7 +15,7 @@ public class CompanyContactController {
         this.companyService = companyService;
     }
 
-    @GetMapping("/contactCompany")
+    @GetMapping("/api/contactCompany")
     public String getContactForm(Model model) {
         model.addAttribute("companies", companyService.getAllCompanies());
         return "contact";

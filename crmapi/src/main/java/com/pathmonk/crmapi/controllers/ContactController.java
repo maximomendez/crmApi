@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/contacts")
+@RequestMapping("/api/contacts")
 @Tag(name = "Contacts", description = "Contact management endpoints")
 public class ContactController {
 
